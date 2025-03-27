@@ -4,20 +4,31 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    /* padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); */
+    overflow: hidden;
+    position: relative;
 }
 
 h1 {
-    width: fit-content;
-    max-width: 90vw;  /* Prevents it from touching edges */
-    font-family: monospace;
 
+    background-color: white;
+    width: fit-content;
+    max-width: 90vw;
+    font-family: monospace;
     border: 3px solid black;
     padding: 9px;
-
-    /* Adds safe spacing from left/right edges */
     margin-left: min(5vw, env(safe-area-inset-left));
     margin-right: min(5vw, env(safe-area-inset-right));
-
     font-size: 4vw;
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
 }
