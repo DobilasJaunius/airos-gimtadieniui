@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ctx = canvas.getContext('2d');
 
     // Resize canvas to fill the window
-    canvas.width = window.innerWidth;
+    canvas.width = window.innerWidth*1.2;
     canvas.height = window.innerHeight;
 
     // Load the custom waffle image
@@ -51,14 +51,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Create an array of waffles
     const waffles = [];
     const fallSpeed = 2;
-    const maxWaffles = 30; // Reduced max waffles due to increased size
+    const maxWaffles = 20; // Reduced max waffles due to increased size
 
     // Function to calculate waffle size based on window dimensions
     function calculateWaffleSize() {
         const baseSize = Math.min(canvas.width, canvas.height) / 15;
         const sizeVariation = baseSize / 2;
         // Increased size by 50% (from 1.25 to 1.5)
-        return (baseSize + Math.random() * sizeVariation) * 2;
+        return (baseSize + Math.random() * sizeVariation) * 3;
     }
 
     // Function to spawn a new waffle without overlap
