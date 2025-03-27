@@ -1,0 +1,13 @@
+h1{
+    position: fixed;
+    inset: 0;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+
+    font-family: monospace;
+
+    border-style: solid;
+    border-width: 3px;
+    padding: 9px;
+}
