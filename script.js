@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Load the custom waffle image
     const waffleImage = new Image();
-    waffleImage.src = 'waffle.png'; // Path to your custom waffle image
+    waffleImage.src = 'waffle.png';
 
     // Waffle class
     class Waffle {
@@ -24,11 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
         update() {
             this.y += this.speed;
             this.angle += 0.01;
-
-            // If the waffle has fallen off the screen, reset its position
-            if (this.y > canvas.height) {
-                this.respawn();
-            }
         }
 
         draw() {
@@ -36,116 +31,115 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
             ctx.rotate(this.angle);
             ctx.translate(-this.size / 2, -this.size / 2);
-
-            // Draw the custom waffle image
             ctx.drawImage(waffleImage, 0, 0, this.size, this.size);
-
             ctx.restore();
         }
 
-        // Respawn function to check overlap
-        respawn() {
-            let attempts = 0;
-            let newX, newY;
-            do {
-                newX = Math.random() * (canvas.width - this.size);
-                newY = -this.size;
-
-                attempts++;
-                if (attempts > 100) break;
-            } while (this.isOverlappingWithOthers(newX, newY) && attempts < 100);
-
-            this.x = newX;
-            this.y = newY;
+        // Check overlap with other waffles
+        isOverlapping(otherWaffle) {
+            const dx = this.x + this.size / 2 - (otherWaffle.x + otherWaffle.size / 2);
+            const dy = this.y + this.size / 2 - (otherWaffle.y + otherWaffle.size / 2);
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Minimum distance to prevent overlap (sum of half-sizes)
+            const minDistance = (this.size + otherWaffle.size) / 2;
+            
+            return distance < minDistance;
         }
-
-        // Method to check if this waffle overlaps with others
-        isOverlappingWithOthers(newX, newY) {
-            for (let other of waffles) {
-                if (other === this) continue;
-
-                const dx = newX + this.size / 2 - (other.x + other.size / 2);
-                const dy = newY + this.size / 2 - (other.y + other.size / 2);
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                // Check if the distance between centers is less than the sum of their radii
-                if (distance < (this.size + other.size) / 2) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    // Function to calculate waffle size based on window dimensions
-    function calculateWaffleSize() {
-        // Base size calculation: smaller on mobile, larger on desktop
-        // Multiplied by 1.25 instead of 2
-        const baseSize = Math.min(canvas.width, canvas.height) / 15;
-        const sizeVariation = baseSize / 2;
-        return () => (baseSize + Math.random() * sizeVariation) * 1.25;
     }
 
     // Create an array of waffles
     const waffles = [];
     const fallSpeed = 2;
+    const maxWaffles = 30; // Maximum number of waffles on screen
 
-    // Function to regenerate waffles with new sizes
-    function regenerateWaffles() {
-        // Clear existing waffles
-        waffles.length = 0;
+    // Function to calculate waffle size based on window dimensions
+    function calculateWaffleSize() {
+        const baseSize = Math.min(canvas.width, canvas.height) / 15;
+        const sizeVariation = baseSize / 2;
+        return (baseSize + Math.random() * sizeVariation) * 1.25;
+    }
 
-        // Dynamically calculate waffle count based on screen size
-        const waffleCount = Math.floor(Math.min(canvas.width, canvas.height) / 70);
-        const getSizeFunc = calculateWaffleSize();
+    // Function to spawn a new waffle without overlap
+    function spawnWaffle() {
+        const size = calculateWaffleSize();
+        let x, y;
+        let newWaffle;
+        let attempts = 0;
 
-        // Generate new waffles
-        for (let i = 0; i < waffleCount; i++) {
-            let size = getSizeFunc();
-            let angle = Math.random() * Math.PI * 2;
-            let x, y;
-            let attempts = 0;
+        do {
+            x = Math.random() * (canvas.width - size);
+            y = -size * (1 + Math.random() * 10); // Staggered vertical position
+            newWaffle = new Waffle(x, y, size, fallSpeed, Math.random() * Math.PI * 2);
 
-            // Try to find a non-overlapping position
-            do {
-                x = Math.random() * (canvas.width - size);
-                y = Math.random() * -canvas.height;
-                attempts++;
-                if (attempts > 100) break;
-            } while (
-                waffles.some(waffle => 
-                    Math.sqrt(
-                        Math.pow(x + size / 2 - (waffle.x + waffle.size / 2), 2) + 
-                        Math.pow(y + size / 2 - (waffle.y + waffle.size / 2), 2)
-                    ) < (size + waffle.size) / 2
-                ) && attempts < 100
+            // Check for overlap with existing waffles
+            const isOverlapping = waffles.some(existingWaffle => 
+                newWaffle.isOverlapping(existingWaffle)
             );
 
-            // Create and add the waffle
-            let newWaffle = new Waffle(x, y, size, fallSpeed, angle);
-            waffles.push(newWaffle);
-        }
+            attempts++;
+            if (attempts > 100) {
+                // If we can't find a non-overlapping position, place it anyway
+                return newWaffle;
+            }
+
+            if (!isOverlapping) {
+                return newWaffle;
+            }
+        } while (true);
     }
 
     // Initial waffle generation
-    regenerateWaffles();
+    function initializeWaffles() {
+        waffles.length = 0; // Clear existing waffles
+        for (let i = 0; i < maxWaffles / 2; i++) {
+            waffles.push(spawnWaffle());
+        }
+    }
+
+    // Spawn timer to create continuous, random waffle generation
+    let lastSpawnTime = 0;
+    function shouldSpawnWaffle(currentTime) {
+        // Random spawn interval between 100-500 ms
+        const spawnInterval = 100 + Math.random() * 400;
+        return currentTime - lastSpawnTime > spawnInterval;
+    }
 
     // Animation loop
-    function animate() {
+    function animate(currentTime) {
+        // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < waffles.length; i++) {
+
+        // Update and draw waffles
+        for (let i = waffles.length - 1; i >= 0; i--) {
             waffles[i].update();
             waffles[i].draw();
+
+            // Remove waffles that have fallen off the screen
+            if (waffles[i].y > canvas.height) {
+                waffles.splice(i, 1);
+            }
         }
+
+        // Spawn new waffles continuously
+        if (shouldSpawnWaffle(currentTime)) {
+            if (waffles.length < maxWaffles) {
+                waffles.push(spawnWaffle());
+                lastSpawnTime = currentTime;
+            }
+        }
+
         requestAnimationFrame(animate);
     }
 
-    animate();
+    // Initialize waffles and start animation
+    initializeWaffles();
+    requestAnimationFrame(animate);
 
-    // Resize the canvas and regenerate waffles when the window is resized
+    // Resize the canvas when the window is resized
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        regenerateWaffles(); // Regenerate waffles with new sizes
+        initializeWaffles(); // Regenerate waffles
     });
 });
