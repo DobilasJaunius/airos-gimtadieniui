@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ctx = canvas.getContext('2d');
 
     // Resize canvas to fill the window
-    canvas.width = window.innerWidth*1.2;
+    canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     // Load the custom waffle image
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const baseSize = Math.min(canvas.width, canvas.height) / 15;
         const sizeVariation = baseSize / 2;
         // Increased size by 50% (from 1.25 to 1.5)
-        return (baseSize + Math.random() * sizeVariation) * 3;
+        return (baseSize + Math.random() * sizeVariation) * 2.5;
     }
 
     // Function to spawn a new waffle without overlap
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let attempts = 0;
 
         do {
-            x = Math.random() * (canvas.width - size);
+            x = Math.random() * (canvas.width*1.3 - size);
             y = -size * (1 + Math.random() * 10); // Staggered vertical position
             newWaffle = new Waffle(x, y, size, fallSpeed, Math.random() * Math.PI * 2);
 
