@@ -4,17 +4,18 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    /* padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); */
 }
-h1{
-    width: fit-content;
-    height: fit-content;
-    /* max-width: 90vw;
-    max-height: 90vW; */
 
+h1 {
+    width: fit-content;
+    max-width: 90vw;  /* Prevents it from touching edges */
     font-family: monospace;
 
-    border-style: solid;
-    border-width: 3px;
+    border: 3px solid black;
     padding: 9px;
+
+    /* Adds safe spacing from left/right edges */
+    margin-left: min(5vw, env(safe-area-inset-left));
+    margin-right: min(5vw, env(safe-area-inset-right));
 }
