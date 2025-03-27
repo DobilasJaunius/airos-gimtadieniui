@@ -18,4 +18,6 @@ h1 {
     /* Adds safe spacing from left/right edges */
     margin-left: min(5vw, env(safe-area-inset-left));
     margin-right: min(5vw, env(safe-area-inset-right));
+
+    font-size: clamp(12px, 4vw, 24px);
 }
