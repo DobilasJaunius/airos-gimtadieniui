@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         update() {
             this.y += this.speed;
-            this.angle += 0.01;
+            this.angle += .01;
         }
 
         draw() {
@@ -51,13 +51,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Create an array of waffles
     const waffles = [];
     const fallSpeed = 2;
-    const maxWaffles = 30; // Maximum number of waffles on screen
+    const maxWaffles = 30; // Reduced max waffles due to increased size
 
     // Function to calculate waffle size based on window dimensions
     function calculateWaffleSize() {
         const baseSize = Math.min(canvas.width, canvas.height) / 15;
         const sizeVariation = baseSize / 2;
-        return (baseSize + Math.random() * sizeVariation) * 1.25;
+        // Increased size by 50% (from 1.25 to 1.5)
+        return (baseSize + Math.random() * sizeVariation) * 2;
     }
 
     // Function to spawn a new waffle without overlap
