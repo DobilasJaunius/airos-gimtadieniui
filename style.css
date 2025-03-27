@@ -1,9 +1,16 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
 h1{
-    position: fixed;
-    inset: 0;
     width: fit-content;
     height: fit-content;
-    margin: auto;
+    /* max-width: 90vw;
+    max-height: 90vW; */
 
     font-family: monospace;
 
