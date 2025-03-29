@@ -10,17 +10,23 @@
     align-items: center;
     background-color: antiquewhite;
     z-index: 9999;
+    
 }
 
 /* Style for the text */
 #splashText {
+    
     font-family: monospace;
-    position: fixed;
+    position: absolute;
     font-size: 20vw;  /* Dynamically size the font */
     color: white;
     font-weight: bold;
     text-align: center;
     z-index: 10000;
+    padding: 9px;
+    width: fit-content;
+    margin-left: min(5vw, env(safe-area-inset-left));
+    margin-right: min(5vw, env(safe-area-inset-right));
 }
 
 body {
