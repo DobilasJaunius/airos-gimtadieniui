@@ -1,3 +1,28 @@
+/* Set splash screen to cover the whole viewport */
+#splashScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: antiquewhite;
+    z-index: 9999;
+}
+
+/* Style for the text */
+#splashText {
+    font-family: monospace;
+    position: fixed;
+    font-size: 20vw;  /* Dynamically size the font */
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    z-index: 10000;
+}
+
 body {
     display: flex;
     justify-content: center;
